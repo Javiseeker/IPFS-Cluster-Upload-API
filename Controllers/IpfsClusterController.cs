@@ -11,16 +11,16 @@ namespace IPFS_Cluster_Upload_API.Controllers
   [Route("api/[controller]")]
   public class IpfsClusterController : ControllerBase
   {
-    public IpfsClusterController(IIpfsClusterRepository Parameters)
-    {
-        //investigar el errror en esta aprte. no me coge bien la interfaz.
-    }
+    //public IpfsClusterController(IIpfsClusterRepository Parameters)
+    //{
+    //    //investigar el errror en esta aprte. no me coge bien la interfaz.
+    //}
 
     [HttpPost("single-file")]
     public async Task<IActionResult> Upload(IFormFile file)
     {
       // validate the file, scan virus, save to a file storage
-        var result = await 
+        //var result = await 
         return Ok();
     }
   }
