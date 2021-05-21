@@ -1,0 +1,8 @@
+https://stackoverflow.com/questions/58730161/how-to-securely-expose-the-api-address-for-ipfs-cluster-services
+
+https://medium.com/rahasak/ipfs-cluster-with-docker-db2ec20a6cc1
+
+https://cluster.ipfs.io/documentation/reference/api/
+
+https://www.andrew.cmu.edu/user/xinyit/2019/03/03/Get-Ready-to-Use-IPFS-Cluster/
+

@@ -8,18 +8,21 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using IPFS_Cluster_Upload_API.Utilities;
 
 namespace IPFS_Cluster_Upload_API.Data.Services
 {
     public class IpfsClusterApiService : IIpfsClusterApiService
     {
-        private readonly HttpClient ipfsClusterClient;
-        private readonly HttpClient ipfsClient;
+        private readonly HttpClient _ipfsClusterClient;
+        private readonly HttpClient _ipfsClient;
 
         public IpfsClusterApiService(IHttpClientFactory clientFactory)
         {
-            ipfsClusterClient = clientFactory.CreateClient("ipfscluster");
-            ipfsClient = clientFactory.CreateClient("ipfs");
+            _ipfsClusterClient = clientFactory.CreateClient("ipfscluster");
+            _ipfsClient = clientFactory.CreateClient("ipfs");
         }
 
         public async Task<IpfsClusterResponse> UploadFile(IFormFile file)
@@ -35,16 +38,10 @@ namespace IPFS_Cluster_Upload_API.Data.Services
                 using var fileContent = new ByteArrayContent(memoryStream.ToArray());
                 fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
                 form.Add(fileContent, "file", file.FileName);
-                var response = await ipfsClusterClient.PostAsync(url, form);
+                var response = await _ipfsClusterClient.PostAsync(url, form);
                 if (response.IsSuccessStatusCode)
                 {
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    Debug.WriteLine(stringResponse);
-                    result = JsonSerializer.Deserialize<IpfsClusterResponse>(
-                        stringResponse,
-                        new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-                        );
-
+                    result = IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync());
                 }
                 else
                 {

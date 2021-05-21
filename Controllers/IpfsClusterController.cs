@@ -23,12 +23,16 @@ namespace IPFS_Cluster_Upload_API.Controllers
         public async Task<IActionResult> Upload(IFormFile file)
         {
             // validate the file, scan virus, save to a file storage
-            if (file.Length > 0)
+            if(file != null)
             {
-                var result = await _service.UploadFile(file);
+                if (file.Length > 0)
+                {
+                    var result = await _service.UploadFile(file);
 
-                return Ok(result);
+                    return Ok(result);
+                }
             }
+
             return BadRequest();
         }
     }
