@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-
+using IPFS_Cluster_Upload_API.Data.Interfaces;
+using IPFS_Cluster_Upload_API.Data.Services;
 namespace IPFS_Cluster_Upload_API
 {
     public class Startup
@@ -28,6 +29,17 @@ namespace IPFS_Cluster_Upload_API
         {
 
             services.AddControllers();
+            services.AddMvc().AddNewtonsoftJson();
+            services.AddCors();
+            services.AddScoped<IIpfsClusterApiService, IpfsClusterApiService>();
+            services.AddHttpClient("ipfscluster", c =>
+            {
+                c.BaseAddress = new Uri("http://localhost:9094/");
+            });
+            services.AddHttpClient("ipfs", c =>
+            {
+                c.BaseAddress = new Uri("http://localhost:8080/");
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPFS Cluster Upload API", Version = "v1" });
@@ -41,12 +53,15 @@ namespace IPFS_Cluster_Upload_API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IPFS_Cluster_Upload_API v1"));
+                app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "IPFS_Cluster_Upload_API v1"); c.DefaultModelsExpandDepth(-1); });
+
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
 
