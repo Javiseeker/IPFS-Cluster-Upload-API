@@ -38,96 +38,219 @@ namespace IPFS_Cluster_Upload_API.Data.Services
                 var response = await _ipfsClusterClient.PostAsync(url, form);
                 if (response.IsSuccessStatusCode)
                 {
-                    result = IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync());
+                    return IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync());
                 }
                 else
                 {
                     throw new HttpRequestException(response.ReasonPhrase);
                 }
             }
-            return result;
             //NOTE: this upload will not work if the garbage collection is not disabled while adding files.
         }
 
-        public async Task<IpfsClusterResponse> DownloadFileFromIpfsClusterByCid(string cid)
+        public async Task<System.IO.Stream> DownloadFileFromIpfsClusterByCid(string cid)
         {
-            var url = "ipfs/" + cid;
-            var result = new IpfsClusterResponse();
+            var url = $"ipfs/{cid}";
             var response = await _ipfsClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
-                result = JsonConvert.DeserializeObject<IpfsClusterResponse>(await response.Content.ReadAsStringAsync());
+                var temp = response.Content.Headers.ContentType;
+                //need to check whether its a video, phone call or text to see what to do with each.
+                return await response.Content.ReadAsStreamAsync();
             }
             else
             {
                 throw new HttpRequestException(response.ReasonPhrase);
             }
-            return result;
         }
 
         public async Task<IpfsClusterInformationResponse> ObtainIpfsClusterPeerInformation()
         {
-            throw new NotImplementedException();
+            var url = "id";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<IpfsClusterInformationResponse>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<IpfsClusterVersionResponse> ObtainIpfsClusterVersion()
         {
-            throw new NotImplementedException();
+            var url = "version";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<IpfsClusterVersionResponse>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<List<IpfsClusterInformationResponse>> ObtainIpfsClusterPeers()
         {
-            throw new NotImplementedException();
+            var url = "peers";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<IpfsClusterInformationResponse>>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
-        public async Task<bool> RemoveIpfsClusterPeer(string IpfsClusterPeerId)
+        public async Task<bool> RemoveIpfsClusterPeer(string ipfsClusterPeerId)
         {
-            throw new NotImplementedException();
+            var url = $"peers/{ipfsClusterPeerId}";
+            var response = await _ipfsClusterClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                //need to check content.
+                return true;
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<List<IpfsClusterResponse>> ObtainIpfsClusterPinsAllocations()
         {
-            throw new NotImplementedException();
+            var url = "allocations";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return IpfsClusterUtils.ParseListOfIpfsClusterResponse(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<IpfsClusterResponse> ObtainIpfsClusterPinAllocationByCid(string cid)
         {
-            throw new NotImplementedException();
+            var url = $"allocations/{cid}";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<List<IpfsClusterResponse>> ObtainIpfsClusterPins()
         {
-            throw new NotImplementedException();
+            var url = "pins";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return IpfsClusterUtils.ParseListOfIpfsClusterResponse(await response.Content.ReadAsStringAsync());
+                
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<IpfsClusterResponse> ObtainIpfsClusterPinByCid(string cid)
         {
-            throw new NotImplementedException();
+            var url = $"pins/{cid}";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync()); ;
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<IpfsClusterResponse> PinIpfsClusterCid(string cid)
         {
-            throw new NotImplementedException();
+            var url = $"pins/{cid}";
+            //need to know which data to send in the post method.
+            //var response = await _ipfsClusterClient.PostAsync(url);
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    return IpfsClusterUtils.ParseIpfsClusterResponse(await response.Content.ReadAsStringAsync());;
+            //}
+            //else
+            //{
+            //    throw new HttpRequestException(response.ReasonPhrase);
+            //}
+            return new IpfsClusterResponse();
         }
 
         public async Task<bool> UnpinIpfsClusterCid(string cid)
         {
-            throw new NotImplementedException();
+            var url = $"pins/{cid}";
+            var response = await _ipfsClusterClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                //need to check content.
+                return true;
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<List<string>> ObtainAvailableMonitorMetrics()
         {
-            throw new NotImplementedException();
+            var url = "monitor/metrics";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<string>>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
-        public async Task<IpfsClusterMetricsResponse> ObtainMonitorMetric(string metric)
+        public async Task<List<IpfsClusterMetricsResponse>> ObtainMonitorMetric(string metric)
         {
-            throw new NotImplementedException();
+            var url = $"monitor/metrics/{metric}";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<IpfsClusterMetricsResponse>>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
         public async Task<List<IpfsClusterMetricsResponse>> ObtainAllMonitorMetrics()
         {
-            throw new NotImplementedException();
+            var url = "health/alerts";
+            var response = await _ipfsClusterClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<IpfsClusterMetricsResponse>>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
         }
 
     }

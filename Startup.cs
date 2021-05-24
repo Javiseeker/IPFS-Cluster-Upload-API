@@ -38,11 +38,11 @@ namespace IPFS_Cluster_Upload_API
             services.AddScoped<IIpfsClusterApiService, IpfsClusterApiService>();
             services.AddHttpClient("ipfscluster", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:9094/");
+                c.BaseAddress = new Uri("http://127.0.0.1:9094/");
             });
             services.AddHttpClient("ipfs", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:8081/");
+                c.BaseAddress = new Uri("http://127.0.0.1:8190/");
             });
             services.AddSwaggerGen(c =>
             {
