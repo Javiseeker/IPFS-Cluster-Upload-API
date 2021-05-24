@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using IPFS_Cluster_Upload_API.Data.Interfaces;
 using IPFS_Cluster_Upload_API.Data.Services;
+using System.Security.Authentication;
+using System.Net;
+using System.Net.Http;
+
 namespace IPFS_Cluster_Upload_API
 {
     public class Startup
@@ -38,7 +42,7 @@ namespace IPFS_Cluster_Upload_API
             });
             services.AddHttpClient("ipfs", c =>
             {
-                c.BaseAddress = new Uri("http://localhost:8080/");
+                c.BaseAddress = new Uri("http://localhost:8081/");
             });
             services.AddSwaggerGen(c =>
             {

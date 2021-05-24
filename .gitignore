@@ -269,6 +269,8 @@ paket-files/
 __pycache__/
 *.pyc
 
+#docker files.
+Docker/
 # Cake - Uncomment if you are using it
 # tools/
 

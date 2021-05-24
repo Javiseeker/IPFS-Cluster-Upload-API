@@ -1,4 +1,4 @@
-﻿using IPFS_Cluster_Upload_API.Models;
+﻿using IPFS_Cluster_Upload_API.Dtos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

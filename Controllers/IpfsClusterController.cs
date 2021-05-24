@@ -19,18 +19,29 @@ namespace IPFS_Cluster_Upload_API.Controllers
             _service = service;
         }
 
-        [HttpPost("single-file")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        [HttpPost("UploadFile")]
+        public async Task<IActionResult> UploadFileAsync(IFormFile file)
         {
             // validate the file, scan virus, save to a file storage
-            if(file != null)
+            if (file != null && file.Length > 0)
             {
-                if (file.Length > 0)
-                {
-                    var result = await _service.UploadFile(file);
+                var result = await _service.UploadFileToIpfsCluster(file);
 
-                    return Ok(result);
-                }
+                return Ok(result);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet("{cid}")]
+        public async Task<IActionResult> DownloadFileAsync(string cid)
+        {
+            // validate the file, scan virus, save to a file storage
+            if (cid != null && cid.Length > 0)
+            {
+                var result = await _service.DownloadFileFromIpfsClusterByCid(cid);
+
+                return Ok(result);
             }
 
             return BadRequest();
